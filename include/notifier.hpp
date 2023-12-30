@@ -30,16 +30,8 @@ extern "C" auto handle_interuption(int sig) -> void {
  * @return     std::string from std::cin
  */
 auto cin_to_string() -> std::string {
-    static constexpr std::chrono::seconds timeout(5);
-    std::future<std::string> future = std::async([]() -> std::string {
-        return {std::istreambuf_iterator<char>{std::cin},
+    return {std::istreambuf_iterator<char>{std::cin},
                 std::istreambuf_iterator<char>{}};
-    });
-    if (future.wait_for(timeout) == std::future_status::ready) {
-        return future.get();
-    } else {
-        return {};
-    }
 }
 
 
