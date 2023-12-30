@@ -1,5 +1,5 @@
 #include <cxxopts.hpp>
-#include <post_example.hpp>
+#include <notifier.hpp>
 
 auto parse_options(int argc, char const *argv[]) {
     cxxopts::Options options("notifier",
@@ -16,7 +16,7 @@ auto parse_options(int argc, char const *argv[]) {
 
 
 auto on_successful_transfer() {
-    return [](cppurl::handle_info info) -> cppurl::post_example::status {
+    return [](cppurl::handle_info info) -> cppurl::notifier::status {
         auto h{info.handle()};
         FORWARD_UNEXPECTED(h);
         std::cout << std::format(
@@ -28,7 +28,7 @@ auto on_successful_transfer() {
 
 
 auto on_unsuccessful_transfer() {
-    return [](cppurl::handle_info info) -> cppurl::post_example::status {
+    return [](cppurl::handle_info info) -> cppurl::notifier::status {
         auto h{info.handle()};
         FORWARD_UNEXPECTED(h);
         std::cout << std::format(
@@ -59,7 +59,7 @@ auto on_fail(auto status, std::string_view url) {
 int main(int argc, char const *argv[]) {
 
     timer t{};
-    cppurl::post_example::status status{cppurl::status_ok};
+    cppurl::notifier::status status{cppurl::status_ok};
     std::string url{};
     try {
         auto [options, result] = parse_options(argc, argv);
@@ -69,7 +69,7 @@ int main(int argc, char const *argv[]) {
         }
         url = result["url"].as<std::string>();
         auto interval{std::chrono::seconds{result["interval"].as<int>()}};
-        cppurl::post_example ex1{url, interval};
+        cppurl::notifier ex1{url, interval};
         status = ex1.run(on_successful_transfer(), on_unsuccessful_transfer());
     } catch (const std::exception &e) {
         std::cout << std::format("Exception was thrown. Reason: {}\n\n",
