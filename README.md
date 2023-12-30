@@ -14,7 +14,7 @@ when cloning it. Otherwise update recursively submodules with `git submodule upd
 
 
 3. As was mentioned above it is header only so all you need to do is include notifier.hpp into your project and that's all! However, note that some modern compiler is required (e.g. gcc13) and standard c++23 should be used.
-    In order to run example from main.cpp just run `./scripts/make_debug.sh && ./scripts/run_debug.sh --url <your_url>`.
+In order to compile and run example from main.cpp just run `./scripts/make_debug.sh && ./scripts/run_debug.sh --url <your_url>` (or `./scripts/make_release.sh && ./scripts/run_release.sh --url <your_url>` for release mode).
 To see available flags for notifier run `./scripts/run_debug.sh --help`.
 
 4. The example program is contained in `main.cpp` file.
