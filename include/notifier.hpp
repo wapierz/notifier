@@ -175,22 +175,22 @@ namespace cppurl {
         auto run(auto &&on_successful_transfer, auto &&on_unsuccessful_transfer)
             -> status {
             FORWARD_ERROR(add_post_requests());
-            std::expected<int, status> still_working_handles{0};
+            std::expected<int, status> ready_handles{0};
             _timer.tick();
             do {
                 FORWARD_UNEXPECTED(mhandle.perform());
-                still_working_handles = handle_finished_transfers(
+                ready_handles = handle_finished_transfers(
                     on_successful_transfer, on_unsuccessful_transfer);
-                FORWARD_UNEXPECTED(still_working_handles);
+                FORWARD_UNEXPECTED(ready_handles);
                 _timer.tock();
                 if (_timer.duration<std::chrono::milliseconds>() >=
                     time_for_new_data) {
                     FORWARD_ERROR(add_post_requests());
                     _timer.tick();
                 }
-                mhandle.wait(poll_wait_time);
-            } while (!::should_stop || (still_working_handles &&
-                                        still_working_handles.value() > 0));
+                FORWARD_UNEXPECTED(mhandle.wait(poll_wait_time));
+            } while (!::should_stop || (ready_handles &&
+                                        ready_handles.value() > 0));
 
 
             return cppurl::status<ffor::multi>{CURLM_OK};
