@@ -1,0 +1,1 @@
+$PWD/build/debug/notifier $@
