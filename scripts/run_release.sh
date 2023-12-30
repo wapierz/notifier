@@ -1,0 +1,1 @@
+$PWD/build/release/notifier $@
