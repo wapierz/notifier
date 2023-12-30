@@ -127,7 +127,7 @@ namespace cppurl {
          *
          * @return     A view consisiting of post field strings.
          */
-        auto read_stdin_requests() const {
+        [[nodiscard]] auto read_stdin_requests() const {
             return std::ranges::owning_view{cin_to_string()} |
                    std::views::split(std::string_view{"\n"}) |
                    std::views::transform([](auto &&req) -> std::string {
@@ -143,7 +143,7 @@ namespace cppurl {
          *
          * @return     status
          */
-        auto add_post_request() -> status {
+        [[nodiscard]] auto add_post_request() -> status {
             auto &handle{pool.get()};
             FORWARD_ERROR(handle.url(url));
             FORWARD_ERROR(handle.template post<true>(requests.front()));
@@ -160,7 +160,7 @@ namespace cppurl {
          *
          * @return     status
          */
-        auto add_post_requests() -> status {
+        [[nodiscard]] auto add_post_requests() -> status {
 
             for (auto &&req : read_stdin_requests()) {
                 requests.push(std::move(req));
@@ -184,10 +184,10 @@ namespace cppurl {
          *
          * @return     status
          */
-        auto handle_completed_transfer(auto handle_info,
-                                       auto &&on_successful_transfer,
-                                       auto &&on_unsuccessful_transfer)
-            -> status {
+        [[nodiscard]] auto handle_completed_transfer(
+            auto handle_info,
+            auto &&on_successful_transfer,
+            auto &&on_unsuccessful_transfer) -> status {
 
             if (handle_info.status()) {
                 FORWARD_ERROR(on_successful_transfer(handle_info));
@@ -217,18 +217,18 @@ namespace cppurl {
          * @return     Number of still available completed tasks which were not
          * handled (should be always 0).
          */
-        auto handle_finished_transfers(auto &&on_successful_transfer,
-                                       auto &&on_unsuccessful_transfer)
-            -> std::expected<int, status> {
+        [[nodiscard]] auto handle_finished_transfers(
+            auto &&on_successful_transfer,
+            auto &&on_unsuccessful_transfer) -> std::expected<int, status> {
             auto info{mhandle.info()};
             while (info.first) {
                 auto [handle_info, _] = info;
-                if (handle_info.completed()) {
+                if (handle_info.completed()) [[likely]] {
                     UNEXP_FORWARD_ERROR(
                         handle_completed_transfer(handle_info,
                                                   on_successful_transfer,
                                                   on_unsuccessful_transfer));
-                } else {
+                } else [[unlikely]] {
                     UNEXP_FORWARD_ERROR(on_unsuccessful_transfer(handle_info));
                 }
                 info = mhandle.info();
@@ -281,8 +281,8 @@ namespace cppurl {
          *
          * @return     status
          */
-        auto run(auto &&on_successful_transfer, auto &&on_unsuccessful_transfer)
-            -> status {
+        [[nodiscard]] auto run(auto &&on_successful_transfer,
+                               auto &&on_unsuccessful_transfer) -> status {
             FORWARD_ERROR(add_post_requests());
             std::expected<int, status> ready_handles{0};
             _timer.tick();
