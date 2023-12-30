@@ -74,7 +74,7 @@ int main(int argc, char const *argv[]) {
     } catch (const std::exception &e) {
         std::cout << std::format("Exception was thrown. Reason: {}\n\n",
                                  e.what());
-        return 0;
+        return 1;
     }
     if (!status) {
         on_fail(status, url);
