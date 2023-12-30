@@ -2,7 +2,7 @@
 Simple post notifier which uses curl library under MIT licence.
 
 # Project description
-This project contains header only implementation of HTTP notification client.  It is written in modern c++23  and is based on curl library. 
+This project contains header only implementation of HTTP notification client.  It is written in modern c++23  and is based on curl library. It works with g++-13 or later.
 
 
 # Install/run
